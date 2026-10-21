@@ -5,7 +5,7 @@
 <p align="center">
   <a href="https://github.com/Cl0ud-9/Fake-News-Detection/actions/workflows/ci.yml"><img src="https://github.com/Cl0ud-9/Fake-News-Detection/actions/workflows/ci.yml/badge.svg" alt="CI"></a>
   <a href="LICENSE"><img src="https://img.shields.io/badge/license-source--available-5b4bd5" alt="License: source-available"></a>
-  <img src="https://img.shields.io/badge/python-3.11%E2%80%933.13-3776ab?logo=python&logoColor=white" alt="Python 3.11 to 3.13">
+  <img src="https://img.shields.io/badge/python-3.11%E2%80%933.14-3776ab?logo=python&logoColor=white" alt="Python 3.11 to 3.14">
   <img src="https://img.shields.io/badge/held--out%20accuracy-89%25%20NB%20%C2%B7%2092%25%20RF-2e7d32" alt="Held-out accuracy: 89% Naive Bayes, 92% random forest">
 </p>
 
@@ -30,7 +30,7 @@ can be downloaded or trained with one command.
 
 ## Quick start
 
-You need Python 3.11, 3.12 or 3.13. The trained model is in the repository, so nothing else needs downloading.
+You need Python 3.11, 3.12, 3.13 or 3.14. The trained model is in the repository, so nothing else needs downloading.
 
 ```bash
 git clone https://github.com/Cl0ud-9/Fake-News-Detection.git
@@ -129,7 +129,7 @@ pytest
 ```
 
 The tests cover loading the data, training and reloading both kinds of model, the shipped model on two held-out
-articles, and the command line. They need no dataset and run on every push for Python 3.11 to 3.13. See
+articles, and the command line. They need no dataset and run on every push for Python 3.11 to 3.14. See
 [CONTRIBUTING.md](CONTRIBUTING.md) before opening a pull request, and [SECURITY.md](SECURITY.md) to report a
 vulnerability. [CHANGELOG.md](CHANGELOG.md) says what changed in each version.
 

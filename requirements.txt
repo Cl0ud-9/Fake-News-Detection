@@ -1,4 +1,4 @@
-# Python 3.11 to 3.13. models/fake_news_nb.joblib needs this exact scikit-learn version.
+# Python 3.11 to 3.14. models/fake_news_nb.joblib needs this exact scikit-learn version.
 scikit-learn==1.9.1
 scipy==1.17.1
 numpy==2.4.6

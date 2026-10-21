@@ -5,6 +5,12 @@ What changed in each version of Fake News Detection.
 The format follows [Keep a Changelog](https://keepachangelog.com), and the versions follow
 [Semantic Versioning](https://semver.org).
 
+## [1.0.1] - 2026-10-22
+
+### Changed
+
+- Python 3.14 is supported: the tests pass on it, and continuous integration now runs on Python 3.11 to 3.14.
+
 ## [1.0.0] - 2026-10-21
 
 The first public version: the two 2024 projects, turned into a tested package with an app.
