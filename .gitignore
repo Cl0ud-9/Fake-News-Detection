@@ -1,0 +1,25 @@
+# Python
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.ruff_cache/
+.ipynb_checkpoints/
+
+# Virtual environments
+.venv/
+venv/
+env/
+
+# Datasets: download them from Kaggle (see README)
+*.csv
+
+# Models you train yourself; only the Naive Bayes model is tracked
+models/*
+!models/fake_news_nb.joblib
+!models/fake_news_nb.metrics.json
+
+# Editors and OS
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db

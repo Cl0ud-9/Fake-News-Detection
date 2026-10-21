@@ -1,0 +1,13 @@
+Fake News Detection does not bundle third-party code. The material below is used by the project and keeps its own
+license.
+
+WELFake dataset: P. K. Verma, P. Agrawal and R. Prodan, "WELFake dataset for fake news detection in text data",
+Zenodo, 2021, https://doi.org/10.5281/zenodo.4561253, licensed under CC BY 4.0
+(https://creativecommons.org/licenses/by/4.0/). The models in models/ were trained on it, and tests/held_out_examples.json
+contains two of its articles, unchanged. The dataset itself is not included.
+
+Fake News competition dataset (train.csv, test.csv), used by notebooks/lstm_kaggle_fake_news.ipynb and downloaded
+from https://www.kaggle.com/c/fake-news. Not included.
+
+Python packages, installed from PyPI by requirements.txt: scikit-learn, SciPy, NumPy, pandas and joblib
+(BSD 3-Clause), Streamlit (Apache License 2.0).
