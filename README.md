@@ -63,8 +63,8 @@ Both read the same input: the headline and body together, as counts of each word
 To use the random forest, download `fake_news_rf.joblib` from the latest release into `models/`, then
 `python predict.py --model models/fake_news_rf.joblib "..."` or `FAKE_NEWS_MODEL=models/fake_news_rf.joblib streamlit run app.py`.
 
-The [notebooks](notebooks) hold the original 2024 work, including an LSTM on a different dataset (the Kaggle Fake News
-competition) that reached 89% on its test set.
+The [notebooks](notebooks) hold the original 2024 work, including an LSTM on a different dataset (the [Kaggle Fake News
+competition](https://www.kaggle.com/c/fake-news)) that reached 89% on its test set.
 
 ## The data
 
