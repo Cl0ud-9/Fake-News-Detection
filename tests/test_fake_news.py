@@ -71,3 +71,50 @@ def test_command_line():
     assert result.returncode == 0
     assert result.stdout.startswith(('real', 'fake'))
     assert subprocess.run([sys.executable, 'predict.py'], cwd=ROOT, capture_output=True).returncode != 0
+
+
+def test_explain_names_the_words_that_decided_it(tiny_csv):
+    from fake_news import explain
+
+    data = load_welfake(tiny_csv)
+    pipeline = build('nb').fit(data['doc'], data['label'])
+    article = 'SHOCKING news from Reuters, share before it is deleted'
+    reasons = explain(pipeline, article, top=5)
+    words = dict(reasons)
+    assert set(words) <= {'shocking', 'news', 'reuters', 'share', 'deleted'}
+    assert words['shocking'] > 0 and words['reuters'] < 0
+    assert [abs(w) for _, w in reasons] == sorted((abs(w) for _, w in reasons), reverse=True)
+
+
+def test_explain_adds_up_to_the_model_log_odds(tiny_csv):
+    import numpy as np
+
+    from fake_news import explain
+
+    data = load_welfake(tiny_csv)
+    pipeline = build('nb').fit(data['doc'], data['label'])
+    article = 'BREAKING the truth they hide, says Reuters'
+    reasons = explain(pipeline, article, top=100)
+    classifier = pipeline.named_steps['classifier']
+    log_probs = pipeline.predict_log_proba([article])[0]
+    fake, real = list(classifier.classes_).index(1), list(classifier.classes_).index(0)
+    prior = classifier.class_log_prior_[fake] - classifier.class_log_prior_[real]
+    assert np.isclose(prior + sum(w for _, w in reasons), log_probs[fake] - log_probs[real])
+
+
+def test_explain_is_empty_for_models_that_cannot_say(tiny_csv):
+    from fake_news import explain
+
+    data = load_welfake(tiny_csv)
+    pipeline = build('rf').fit(data['doc'], data['label'])
+    assert explain(pipeline, 'SHOCKING truth') == []
+    assert explain(build('nb').fit(data['doc'], data['label']), 'the and of') == []
+
+
+def test_command_line_explains_on_request():
+    result = subprocess.run([sys.executable, 'predict.py', '--explain', FAKE[0]], cwd=ROOT, capture_output=True,
+                            text=True)
+    assert result.returncode == 0
+    lines = result.stdout.strip().splitlines()
+    assert lines[0].startswith(('fake', 'real'))
+    assert len(lines) > 1 and all(line.split()[1] in ('fake', 'real') for line in lines[1:])

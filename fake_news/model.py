@@ -2,6 +2,7 @@
 import os
 
 import joblib
+import numpy as np
 import sklearn
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.feature_extraction.text import CountVectorizer
@@ -46,3 +47,33 @@ def predict(pipeline, documents):
         index = int(probs.argmax())
         results.append((LABELS[int(pipeline.classes_[index])], float(probs[index])))
     return results
+
+
+def explain(pipeline, document, top=8):
+    """The words in `document` that pushed the answer hardest, strongest first, as [(word, weight)].
+
+    A positive weight pushes towards fake, a negative one towards real. For Naive Bayes this is exact: the model adds
+    up, for every word, its count times log(how often fake articles use it / how often real ones do). Other models
+    do not decompose this way, so they get an empty list.
+    """
+    classifier = pipeline.named_steps['classifier']
+    if not hasattr(classifier, 'feature_log_prob_'):
+        return []
+    counts = pipeline.named_steps['counts']
+    row = counts.transform([document])
+    if not row.nnz:
+        return []
+    labels = [LABELS[int(c)] for c in classifier.classes_]
+    fake, real = labels.index('fake'), labels.index('real')
+    words = row.indices
+    weights = row.data * (classifier.feature_log_prob_[fake, words] - classifier.feature_log_prob_[real, words])
+    vocabulary = _vocabulary(counts)
+    order = np.argsort(-np.abs(weights))[:top]
+    return [(vocabulary[words[k]], float(weights[k])) for k in order]
+
+
+def _vocabulary(counts):
+    """Index -> word, built once per vectorizer."""
+    if not hasattr(counts, '_index_to_word'):
+        counts._index_to_word = counts.get_feature_names_out()
+    return counts._index_to_word

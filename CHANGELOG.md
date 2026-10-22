@@ -5,6 +5,14 @@ What changed in each version of Fake News Detection.
 The format follows [Keep a Changelog](https://keepachangelog.com), and the versions follow
 [Semantic Versioning](https://semver.org).
 
+## [1.1.0] - 2026-10-22
+
+### Added
+
+- Explanations: the app tints each deciding word in the article, red for fake and green for real, and ranks the
+  strongest on each side; `predict.py --explain` lists them. `fake_news.explain()` returns each word's exact share of
+  the Naive Bayes decision, and a test checks that the shares add up to the model's log-odds.
+
 ## [1.0.1] - 2026-10-22
 
 ### Changed

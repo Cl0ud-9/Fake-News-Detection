@@ -1,6 +1,6 @@
 <h1 align="center">Fake News Detection</h1>
 
-<p align="center"><strong>Says whether a news article reads like real or fake news, from its words alone.</strong></p>
+<p align="center"><strong>Says whether a news article reads like real or fake news, from its words alone, and shows which words decided it.</strong></p>
 
 <p align="center">
   <a href="https://github.com/Cl0ud-9/Fake-News-Detection/actions/workflows/ci.yml"><img src="https://github.com/Cl0ud-9/Fake-News-Detection/actions/workflows/ci.yml/badge.svg" alt="CI"></a>
@@ -20,13 +20,14 @@
 <br>
 
 <p align="center">
-  <img src="docs/img/app.png" alt="The app judging a clickbait post as fake news" width="640">
+  <img src="docs/img/app.png" alt="The app judging a clickbait post as fake news, with the deciding words tinted red in the article and ranked by how hard they pushed: shocking, hillary, mainstream, breaking" width="640">
 </p>
 
 Paste a headline and article, and the app says whether it reads like the real or the fake news it was trained on. It
 counts the words in the article and asks a Naive Bayes classifier, trained on about 42,000 labelled articles from the
-WELFake dataset, which kind of article uses those words more. A random forest on the same counts is more accurate and
-can be downloaded or trained with one command.
+WELFake dataset, which kind of article uses those words more. Then it shows its working: each deciding word is tinted
+in the article, red for fake and green for real, and ranked by how far it moved the answer. A random forest on the
+same counts is more accurate and can be downloaded or trained with one command.
 
 ## Quick start
 
@@ -47,7 +48,24 @@ Or from the command line:
 python predict.py "WASHINGTON (Reuters) - The Senate passed the budget bill on Tuesday, officials said."
 # real (model confidence 100.0%)
 python predict.py --file article.txt
+python predict.py --explain "BREAKING: SHOCKING scandal, share before it gets deleted!"
+# fake (model confidence 100.0%)
+#   shocking             fake    1.70
+#   breaking             fake    1.22
+#   deleted              fake    1.09
 ```
+
+## Why the model says what it says
+
+Naive Bayes adds up evidence one word at a time, so its decision can be split exactly into each word's share: the
+number of times the word appears, times the log of how much more often fake articles in the training data use it
+than real ones (or the other way round). `fake_news.explain()` returns those shares, strongest first; the app tints
+the words and draws them as bars, and `predict.py --explain` lists them. Added to the model's prior, the shares give
+exactly the log-odds behind the answer, which a test checks.
+
+The explanations also show the model's blind spots honestly. On wire stories the strongest single clue is usually the
+word "reuters", which is a byline, not evidence about the story (see [Honest limits](#honest-limits)). The random
+forest's decisions cannot be split this way, so it gives no explanation.
 
 ## Results
 
@@ -114,7 +132,7 @@ predict.py           command-line classification
 train.py             train and measure a model on WELFake
 fake_news/
   data.py            loading WELFake: titles and bodies, empty rows and duplicates removed
-  model.py           the pipelines, saving and loading
+  model.py           the pipelines, saving, loading and explaining
 models/              the trained Naive Bayes model and its metrics
 notebooks/           the original 2024 notebooks (see notebooks/README.md)
 tests/               pytest suite
@@ -129,7 +147,7 @@ pytest
 ```
 
 The tests cover loading the data, training and reloading both kinds of model, the shipped model on two held-out
-articles, and the command line. They need no dataset and run on every push for Python 3.11 to 3.14. See
+articles, the explanations (including that they add up to the model's log-odds), and the command line. They need no dataset and run on every push for Python 3.11 to 3.14. See
 [CONTRIBUTING.md](CONTRIBUTING.md) before opening a pull request, and [SECURITY.md](SECURITY.md) to report a
 vulnerability. [CHANGELOG.md](CHANGELOG.md) says what changed in each version.
 
